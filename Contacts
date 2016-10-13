@@ -1,0 +1,71 @@
+def main(): #主程序
+    num='0123456789'
+    i=input('请输入相关指令代码：')
+    if i in num:
+        i=int(i)
+        if i==1:
+            func_1()
+        elif i==2:
+            func_2()
+        elif i==3:
+            func_3()
+        elif i==4:
+            func_4()
+        else:
+            return main()
+    else:
+        return main()
+def cf(name): #查询子程序
+    if name in contacts:
+        j=input('是否修改用户资料（YES/NO）')
+        if j=='YES':
+            num=input('请输入用户联系电话：')
+            contacts[name] = num
+        elif j=='NO':
+            return main()
+        else:
+            print('输入错误')
+            return cf(name)
+    else:
+        num=input('请输入该用户联系电话：')
+        contacts[name] = num
+        return main()
+def sc(name): #删除子程序
+    if name in contacts:
+        print('您要删除联系人-->>',name,'：',contacts[name])
+        j=input('是否删除用户资料（YES/NO）')
+        if j=='YES':
+            contacts.pop(name)
+        elif j=='NO':
+            return main()
+        else:
+            print('输入错误')
+            return sc(name)
+    else:
+        print('该联系人不存在')
+        return main()
+def func_1(): #功能1
+    name=input('请输入联系人姓名：')
+    if contacts.get(name):
+        print('您输入的联系人存在-->>',name,'：',contacts[name])
+        return main()
+    else:
+        print('该联系人不存在')
+        return main()
+def func_2(): #功能2
+    name=input('请输入要添加联系人姓名：')
+    cf(name)
+    return main()
+def func_3(): #功能3
+    name=input('请输入要删除联系人姓名：')
+    sc(name)
+    return main()
+def func_4(): #功能4
+    print('|---感谢使用通讯录程序---|')
+print(r'''|---欢迎进入通讯录程序---|
+|--- 1.查询联系人资料 ---|
+|--- 2.插入新的联系人 ---|
+|--- 3.删除已有联系人 ---|
+|--- 4.退出通讯录程序 ---|''')
+contacts={}
+main()
