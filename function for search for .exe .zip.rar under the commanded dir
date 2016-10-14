@@ -1,0 +1,28 @@
+import os
+def check_hzm():
+    global file_list
+    all_file=os.listdir()
+    for each_file in all_file:
+        b= ['.exe','.zip','.rar']
+        cwd=str(os.getcwd())
+        EACH_FILE=(cwd+os.sep+each_file)
+        if EACH_FILE not in file_list:
+                if os.path.splitext(each_file)[1] in b:
+                    file_list.append(EACH_FILE)
+def search_file(file_dir):
+    os.chdir(file_dir)
+    all_file = os.listdir()
+    for each_file in all_file:
+        if os.path.isdir(each_file):
+            search_file(each_file)
+            os.chdir(os.pardir)
+        else:
+            check_hzm()
+file_dir=input('请输入要开始搜索的路径：')
+file_list=[]
+search_file(file_dir)
+os.chdir('f:\\py\\')
+f=open('exelist.txt','w')
+for each in file_list:
+    f.write('%s\n' % each)
+f.close()
