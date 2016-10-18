@@ -1,0 +1,104 @@
+import random as r
+import sys
+
+# 随机生成步数和方向
+def steps(x):
+    step = 0
+    while not step:
+        step = r.randint(-x,x)
+    fx = r.randint(0,1)
+    return (step,fx)
+
+# 初始化位置
+def set(tf):
+    L=[r.randint(0,10),r.randint(0,10)]
+    print(tf+'出现在(%d,%d)' %(L[0],L[1]))
+    return L
+    
+# 移动
+def move(step,L):
+    
+        if step[1]:
+            L[0] += step[0]
+        else:
+            L[1] += step[0]
+        return L
+
+# 检查边缘
+def check_area(L):
+    limit = [0,10]
+    # x轴撞墙
+    if L[0] > 10:
+        L[0] = 20 - L[0]
+    if L[0] <0:
+        L[0] = -L[0]
+    # y轴撞墙
+    if L[1] > 10:
+        L[1] = 20 - L[1]
+    if L[1] <0:
+        L[1] = -L[1]
+    return L
+
+# 定义乌龟
+class Tut:
+    def __init__(self,HP=100):
+        self.HP=HP
+    def set(self):
+        self.L = set('乌龟')
+    def move(self):
+        try:
+            L = move(steps(2),self.L)
+            self.HP -= 1
+            self.L = check_area(L)
+            print('乌龟移动到了(%d,%d)' % (self.L[0],self.L[1]))
+            print('乌龟血量为%d' % self.HP)
+        except AttributeError:
+            print('请初始化乌龟')
+                
+# 定义鱼
+class Fish:
+    def set(self):
+        self.L=set('鱼')
+    def move(self):
+        try:
+            L = move(steps(1),self.L)
+            self.L = check_area(L)
+            print('鱼移动到了(%d,%d)' % (self.L[0],self.L[1]))
+        except AttributeError:
+            print('请初始化鱼')
+
+# 初始化乌龟和鱼
+tut=Tut()
+tut.set()
+fish=[]
+for i in range(10):
+    temp = Fish()
+    temp.set()
+    fish.append(temp)
+    print('有%d条小鱼出生' % len(fish))
+
+# 开始移动
+while True:
+    try:
+        tut.move()
+        t = tut.L
+        for each in fish:
+            if tut.HP > 0:
+                each.move()
+                f = each.L
+                if len(fish) != 0:
+                    if f == t:
+                        fish.remove(each)
+                        print('一条小鱼被吃掉了，还剩%d条小鱼' % len(fish))
+                        tut.HP +=20
+                        if tut.HP > 100:
+                            tut.HP =100
+                        print('乌龟血量为%d' % tut.HP)
+                else:
+                    print('鱼被吃完，游戏结束')
+                    assert 3 > 4
+            else:
+                print('乌龟血槽空，游戏结束')
+                assert 3 > 4
+    except AssertionError:
+        sys.exit(0)
