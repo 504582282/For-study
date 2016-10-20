@@ -1,0 +1,28 @@
+import time
+
+def gettime():
+    return time.strftime('%a %b %d %H:%M:%S %Y',time.localtime())
+
+
+
+class Record:
+    
+    def __init__(self,val,name):
+        self.val = val
+        self.name = name
+    def __get__(self,instance,owner):
+        self.f=open('Record.txt','a')
+        self.line = '%s 变量于北京时间 %s 被读取，%s=%s\n' % (self.name,gettime(),self.name,self.val)
+        self.f.writelines(self.line)
+        self.f.close()
+        return self.val
+
+    def __set__(self,instance,value):
+        self.val = value
+        self.f=open('Record.txt','a')
+        self.line = '%s 变量于北京时间 %s 被修改，%s=%s\n' % (self.name,gettime(),self.name,self.val)
+        self.f.writelines(self.line)
+        self.f.close()
+class Test:
+    x = Record(10, 'x')
+    y = Record(8.8, 'y')
