@@ -1,0 +1,9 @@
+import easygui
+import urllib.request
+
+size = easygui.multenterbox(msg='请输入尺寸',title='猫图片下载器',fields=['宽','高'])
+url = 'http://placekitten.com/g/%s/%s' % (size[0],size[1])
+Re = urllib.request.urlopen(url)
+file_name = easygui.filesavebox(title='请选择要保存的位置',filetypes='.jpg')
+with open(file_name,'wb') as f:
+    f.write(Re.read())
