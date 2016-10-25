@@ -1,0 +1,48 @@
+import urllib.request,re,os
+from bs4 import BeautifulSoup
+
+def url_open(url):
+    req = urllib.request.Request(url)
+    req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393')
+    response = urllib.request.urlopen(req)
+    soup = BeautifulSoup(response,'html.parser')
+    return soup
+
+def get_cp_num(url):
+    req = url_open(url)
+    num = req.find(class_ = re.compile("current-comment-page")).text
+    num = int(num[1:-1])
+    return num
+
+def get_url(urls):
+    req = url_open(urls)
+    urls = []
+    for each in req.find_all(class_ = re.compile('view_img_link')):
+        urls.append(each['href'])
+    return(urls)
+
+def img_save(img_urls,d):
+    for each in img_urls:
+        req = urllib.request.Request(each)
+        req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393')
+        response = urllib.request.urlopen(req)
+        response = response.read()
+        filename = each.split('/')[-1]
+        with open(filename,'wb') as f:
+            f.write(response)
+
+def main(page=10,d='OOXX'):
+    os.mkdir(d)
+    os.chdir(d)
+    url = 'http://jandan.net/ooxx/'
+    num = get_cp_num(url)
+    for i in range(page):
+        num -= 1
+        urls = url+'page-'+str(num)+'#comments'
+        img_urls = get_url(urls)
+        img_save(img_urls,d)
+
+if __name__ == '__main__':
+    main()
+    print('保存完成')
+        
