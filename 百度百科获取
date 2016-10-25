@@ -1,0 +1,36 @@
+import urllib.request
+import re
+from bs4 import BeautifulSoup
+
+keyword = input('请输入关键词：')
+keyword = urllib.request.pathname2url(keyword)
+
+response = urllib.request.urlopen('http://baike.baidu.com/item/%s' % keyword)
+soup = BeautifulSoup(response,'html.parser')
+if '错误页' in soup.h1.text:
+    print('百度百科尚未收录词条')
+else:
+    if soup.h2:
+        print(soup.h1.text,soup.h2.text)
+    else:
+        print(soup.h1.text)
+    print(soup.find(class_=re.compile('lemma-summary')).text)
+    print('以下是相关词条：')
+
+    i=0
+    for each in soup.find_all(href = re.compile('view')):
+        if i < 10:
+            i += 1
+            url = 'http://baike.baidu.com%s' % each['href']
+            re = urllib.request.urlopen(url)
+            so = BeautifulSoup(re,'html.parser')
+            if so.h2:
+                print (so.h1.text,so.h2.text,'->',url)
+            else:
+                print (so.h1.text,'->',url)
+        else:
+            j = input('输入任意字符将继续打印，q退出程序：')
+            if j == 'q':
+                break
+            else:
+                i=0
