@@ -1,0 +1,13 @@
+import os,time,urllib.request
+
+req = urllib.request.urlopen('http://app.jszg.edu.cn/portal/visit/person/check')
+r = req.read().decode('utf-8')
+while r[73] != '0':
+    req = urllib.request.urlopen('http://app.jszg.edu.cn/portal/visit/person/check')
+    r = req.read().decode('utf-8')
+    if r[73] == '2':
+        print('网络拥挤，3秒后重试')
+        time.sleep(3)
+print('网络正常，正在打开浏览器')
+command = r'"C:\Users\ivany\AppData\Local\SogouExplorer\SogouExplorer.exe" http://app.jszg.edu.cn/portal/enroll/index'
+os.system(command)
